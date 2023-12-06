@@ -2,7 +2,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:notes_app/views/login_view.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({
@@ -34,7 +33,7 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Register'), centerTitle: true),
+      appBar: AppBar(title: const Text('Register')),
       body: Column(
         children: [
           TextField(
@@ -86,10 +85,11 @@ class _RegisterViewState extends State<RegisterView> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LogInView()),
-                  (route) => false);
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/login/',
+                (route) => false,
+              );
             },
             child: const Text('Already registered yet? Log In here'),
           ),
