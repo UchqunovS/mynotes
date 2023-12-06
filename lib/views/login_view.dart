@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' show log;
-
 import 'package:notes_app/constants/routes.dart';
+import 'package:notes_app/utilities/show_error_dialog.dart';
 
 class LogInView extends StatefulWidget {
   const LogInView({
@@ -66,19 +65,20 @@ class _LogInViewState extends State<LogInView> {
               } on FirebaseAuthException catch (e) {
                 switch (e.code) {
                   case 'channel-error':
-                    log('Both Fields are required');
+                    await showErrorDialog(context, 'Both Fields are required');
                     break;
                   case 'invalid-email':
-                    log('Invalid Email');
-
+                    await showErrorDialog(context, 'Invalid Email');
                     break;
                   case 'invalid-credential':
-                    log('Password or email is wrong');
-
+                    await showErrorDialog(
+                        context, 'Password or email is wrong');
                     break;
                   default:
-                    log(e.code);
+                    await showErrorDialog(context, 'Error: ${e.code}');
                 }
+              } catch (e) {
+                await showErrorDialog(context, 'Error: $e');
               }
             },
             child: const Text('Log In'),
