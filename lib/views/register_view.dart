@@ -1,7 +1,6 @@
-// ignore_for_file: avoid_print
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' show log;
 
 class RegisterView extends StatefulWidget {
   const RegisterView({
@@ -38,12 +37,13 @@ class _RegisterViewState extends State<RegisterView> {
         children: [
           TextField(
             controller: _email,
-            decoration: const InputDecoration(hintText: 'Email here'),
+            decoration: const InputDecoration(hintText: 'Insert Your Email'),
             keyboardType: TextInputType.emailAddress,
           ),
           TextField(
             controller: _password,
-            decoration: const InputDecoration(hintText: 'Password here'),
+            decoration:
+                const InputDecoration(hintText: 'Create A New Password'),
             obscureText: true,
             keyboardType: TextInputType.visiblePassword,
           ),
@@ -57,27 +57,23 @@ class _RegisterViewState extends State<RegisterView> {
                   email: email,
                   password: password,
                 );
-                print(userCredential);
+                log(userCredential.toString());
               } on FirebaseAuthException catch (e) {
                 switch (e.code) {
                   case 'channel-error':
-                    print(
-                        '_________________________________Empty Stamp____________________________');
+                    log('Both fields are required');
                     break;
                   case 'invalid-email':
-                    print(
-                        '_________________________________ Invalid Email ____________________________');
+                    log('Invalid Email');
                     break;
                   case 'weak-password':
-                    print(
-                        '_________________________________ Weak Password ____________________________');
+                    log('Weak Password');
                     break;
                   case 'email-already-in-use':
-                    print(
-                        '_________________________________ Email Already In Use ____________________________');
+                    log('Email Already In Use');
                     break;
                   default:
-                    print(e.code);
+                    log(e.code);
                 }
               }
             },

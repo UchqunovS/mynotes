@@ -1,7 +1,6 @@
-// ignore_for_file: avoid_print
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' show log;
 
 class LogInView extends StatefulWidget {
   const LogInView({
@@ -59,23 +58,23 @@ class _LogInViewState extends State<LogInView> {
                   email: email,
                   password: password,
                 );
-                print(userCredential);
+
+                log(userCredential.toString());
               } on FirebaseAuthException catch (e) {
                 switch (e.code) {
                   case 'channel-error':
-                    print(
-                        '_________________________________ Both Fields are required ____________________________');
+                    log('Both Fields are required');
                     break;
                   case 'invalid-email':
-                    print(
-                        '_________________________________ Invalid Email ____________________________');
+                    log('Invalid Email');
+
                     break;
                   case 'invalid-credential':
-                    print(
-                        '_________________________________ Password or email is wrong ____________________________');
+                    log('Password or email is wrong');
+
                     break;
                   default:
-                    print(e.code);
+                    log(e.code);
                 }
               }
             },
