@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:notes_app/constants/routes.dart';
 import 'package:notes_app/views/login_view.dart';
+import 'package:notes_app/views/notes_view.dart';
 import 'package:notes_app/views/register_view.dart';
 import 'package:notes_app/views/verify_email_view.dart';
 import 'firebase_options.dart';
@@ -54,46 +55,6 @@ class HomePage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
         }
       },
-    );
-  }
-}
-
-enum MenuAction { logout }
-
-class NotesView extends StatelessWidget {
-  const NotesView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Main UI'),
-        actions: [
-          PopupMenuButton<MenuAction>(
-            itemBuilder: (context) => [
-              const PopupMenuItem<MenuAction>(
-                value: MenuAction.logout,
-                child: Text('Log out'),
-              ),
-            ],
-            onSelected: (value) async {
-              switch (value) {
-                case MenuAction.logout:
-                  final shouldLogOut = await shouldLogOutDialog(context);
-                  if (shouldLogOut) {
-                    await FirebaseAuth.instance.signOut();
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      loginRoute,
-                      (_) => false,
-                    );
-                  }
-                  break;
-                default:
-              }
-            },
-          )
-        ],
-      ),
     );
   }
 }
