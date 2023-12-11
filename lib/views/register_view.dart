@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:notes_app/constants/routes.dart';
+import 'package:notes_app/services/auth/auth_exceptions.dart';
+import 'package:notes_app/services/auth/auth_service.dart';
 import 'package:notes_app/utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
@@ -55,32 +55,22 @@ class _RegisterViewState extends State<RegisterView> {
               final String email = _email.text;
               final String password = _password.text;
               try {
-                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                await AuthService.firebase().createUser(
                   email: email,
                   password: password,
                 );
-                final user = FirebaseAuth.instance.currentUser;
-                user?.sendEmailVerification();
+                await AuthService.firebase().sendEmailVerification();
                 Navigator.of(context).pushNamed(verifyEmailRoute);
-              } on FirebaseAuthException catch (e) {
-                switch (e.code) {
-                  case 'channel-error':
-                    await showErrorDialog(context, 'Both fields are required');
-                    break;
-                  case 'invalid-email':
-                    await showErrorDialog(context, 'Invalid email');
-                    break;
-                  case 'weak-password':
-                    await showErrorDialog(context, 'Weak password');
-                    break;
-                  case 'email-already-in-use':
-                    await showErrorDialog(context, 'Email is already in use');
-                    break;
-                  default:
-                    await showErrorDialog(context, 'Error: ${e.code}');
-                }
-              } catch (e) {
-                await showErrorDialog(context, 'Error: $e');
+              } on MissingPasswordOrEmailAuthException {
+                await showErrorDialog(context, 'Both fields are required');
+              } on InvalidEmailAuthException {
+                await showErrorDialog(context, 'Invalid email');
+              } on WeakPasswordAuthAuthException {
+                await showErrorDialog(context, 'Weak password');
+              } on EmailIsAlreadyInUseAuthException {
+                await showErrorDialog(context, 'Email is already in use');
+              } on GenericAuthException {
+                await showErrorDialog(context, 'Could not create a user');
               }
             },
             child: const Text('Register'),
