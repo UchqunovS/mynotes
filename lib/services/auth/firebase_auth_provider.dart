@@ -8,6 +8,13 @@ import 'package:firebase_auth/firebase_auth.dart'
 
 class FirebaseAuthProvider implements AuthProvider {
   @override
+  Future<void> initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+  @override
   Future<AuthUser> createUser({
     required String email,
     required String password,
@@ -24,17 +31,14 @@ class FirebaseAuthProvider implements AuthProvider {
         throw UserNotLoggedInAuthException();
       }
     } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'channel-error':
-          throw MissingPasswordOrEmailAuthException();
-        case 'invalid-email':
-          throw InvalidEmailAuthException();
-        case 'weak-password':
-          throw WeakPasswordAuthAuthException();
-        case 'email-already-in-use':
-          throw EmailIsAlreadyInUseAuthException();
-        default:
-          throw GenericAuthException();
+      if (e.code == 'weak-password') {
+        throw WeakPasswordAuthException();
+      } else if (e.code == 'email-already-in-use') {
+        throw EmailAlreadyInUseAuthException();
+      } else if (e.code == 'invalid-email') {
+        throw InvalidEmailAuthException();
+      } else {
+        throw GenericAuthException();
       }
     } catch (_) {
       throw GenericAuthException();
@@ -68,13 +72,12 @@ class FirebaseAuthProvider implements AuthProvider {
         throw UserNotLoggedInAuthException();
       }
     } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'channel-error':
-          throw MissingPasswordOrEmailAuthException();
-        case 'user-not-found':
-          throw UserNotFoundAuthException();
-        default:
-          throw GenericAuthException();
+      if (e.code == 'user-not-found') {
+        throw UserNotFoundAuthException();
+      } else if (e.code == 'wrong-password') {
+        throw WrongPasswordAuthException();
+      } else {
+        throw GenericAuthException();
       }
     } catch (_) {
       throw GenericAuthException();
@@ -99,12 +102,5 @@ class FirebaseAuthProvider implements AuthProvider {
     } else {
       throw UserNotLoggedInAuthException();
     }
-  }
-
-  @override
-  Future<void> initialize() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
   }
 }

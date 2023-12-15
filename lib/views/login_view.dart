@@ -36,58 +36,80 @@ class _LogInViewState extends State<LogInView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Log in')),
+      appBar: AppBar(
+        title: const Text('Login'),
+      ),
       body: Column(
         children: [
           TextField(
             controller: _email,
-            decoration:
-                const InputDecoration(hintText: 'Enter Your Email here'),
+            enableSuggestions: false,
+            autocorrect: false,
             keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              hintText: 'Enter your email here',
+            ),
           ),
           TextField(
             controller: _password,
-            decoration:
-                const InputDecoration(hintText: 'Enter Your Password here'),
             obscureText: true,
-            keyboardType: TextInputType.visiblePassword,
+            enableSuggestions: false,
+            autocorrect: false,
+            decoration: const InputDecoration(
+              hintText: 'Enter your password here',
+            ),
           ),
           TextButton(
             onPressed: () async {
-              final String email = _email.text;
-              final String password = _password.text;
+              final email = _email.text;
+              final password = _password.text;
               try {
-                await AuthService.firebase().createUser(
+                await AuthService.firebase().logIn(
                   email: email,
                   password: password,
                 );
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/',
-                  (route) => false,
+                final user = AuthService.firebase().currentUser;
+                if (user?.isEmailVerified ?? false) {
+                  // user's email is verified
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    notesRoute,
+                    (route) => false,
+                  );
+                } else {
+                  // user's email is NOT verified
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    verifyEmailRoute,
+                    (route) => false,
+                  );
+                }
+              } on UserNotFoundAuthException {
+                await showErrorDialog(
+                  context,
+                  'User not found',
                 );
-              } on MissingPasswordOrEmailAuthException {
-                await showErrorDialog(context, 'Both Fields are required');
-              } on InvalidEmailAuthException {
-                await showErrorDialog(context, 'Invalid Email');
+              } on WrongPasswordAuthException {
+                await showErrorDialog(
+                  context,
+                  'Wrong credentials',
+                );
               } on GenericAuthException {
                 await showErrorDialog(
                   context,
-                  'Could not log in with pprovided details, make sure they are valid',
+                  'Authentication error',
                 );
               }
             },
-            child: const Text('Log In'),
+            child: const Text('Login'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
+              Navigator.of(context).pushNamedAndRemoveUntil(
                 registerRoute,
                 (route) => false,
               );
             },
-            child: const Text('Have not registered yet? Register here'),
-          ),
+            child: const Text('Not registered yet? Register here!'),
+          )
         ],
       ),
     );

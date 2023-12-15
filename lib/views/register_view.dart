@@ -35,56 +35,73 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
+      appBar: AppBar(
+        title: const Text('Register'),
+      ),
       body: Column(
         children: [
           TextField(
             controller: _email,
-            decoration: const InputDecoration(hintText: 'Insert Your Email'),
+            enableSuggestions: false,
+            autocorrect: false,
             keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              hintText: 'Enter your email here',
+            ),
           ),
           TextField(
             controller: _password,
-            decoration:
-                const InputDecoration(hintText: 'Create A New Password'),
             obscureText: true,
-            keyboardType: TextInputType.visiblePassword,
+            enableSuggestions: false,
+            autocorrect: false,
+            decoration: const InputDecoration(
+              hintText: 'Enter your password here',
+            ),
           ),
           TextButton(
             onPressed: () async {
-              final String email = _email.text;
-              final String password = _password.text;
+              final email = _email.text;
+              final password = _password.text;
               try {
                 await AuthService.firebase().createUser(
                   email: email,
                   password: password,
                 );
-                await AuthService.firebase().sendEmailVerification();
+                AuthService.firebase().sendEmailVerification();
                 Navigator.of(context).pushNamed(verifyEmailRoute);
-              } on MissingPasswordOrEmailAuthException {
-                await showErrorDialog(context, 'Both fields are required');
+              } on WeakPasswordAuthException {
+                await showErrorDialog(
+                  context,
+                  'Weak password',
+                );
+              } on EmailAlreadyInUseAuthException {
+                await showErrorDialog(
+                  context,
+                  'Email is already in use',
+                );
               } on InvalidEmailAuthException {
-                await showErrorDialog(context, 'Invalid email');
-              } on WeakPasswordAuthAuthException {
-                await showErrorDialog(context, 'Weak password');
-              } on EmailIsAlreadyInUseAuthException {
-                await showErrorDialog(context, 'Email is already in use');
+                await showErrorDialog(
+                  context,
+                  'This is an invalid email address',
+                );
               } on GenericAuthException {
-                await showErrorDialog(context, 'Could not create a user');
+                await showErrorDialog(
+                  context,
+                  'Failed to register',
+                );
               }
             },
             child: const Text('Register'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
+              Navigator.of(context).pushNamedAndRemoveUntil(
                 loginRoute,
                 (route) => false,
               );
             },
-            child: const Text('Already registered yet? Log In here'),
-          ),
+            child: const Text('Already registered? Login here!'),
+          )
         ],
       ),
     );
