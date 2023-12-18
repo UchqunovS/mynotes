@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "997873252013",
+    "project_id": "notes-app-sardoru",
+    "storage_bucket": "notes-app-sardoru.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997873252013:android:b33a6ee19ad3877c81b824",
+        "android_client_info": {
+          "package_name": "com.example.notes_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFGFzxCckcfvOgcFysWqARACCZ2v_rcmA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
