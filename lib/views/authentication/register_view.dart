@@ -79,7 +79,7 @@ class _RegisterViewState extends State<RegisterView> {
                   context,
                   'Email is already in use',
                 );
-              } on InvalidEmailAuthException {
+              } on InvalidFillingAuthException {
                 await showErrorDialog(
                   context,
                   'This is an invalid email address',

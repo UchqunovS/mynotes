@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/constants/routes.dart';
-import 'package:notes_app/services/auth/auth_provider.dart';
-import 'package:notes_app/services/auth/auth_service.dart';
 import 'package:notes_app/services/auth/bloc/auth_bloc.dart';
 import 'package:notes_app/services/auth/firebase_auth_provider.dart';
 import 'package:notes_app/views/authentication/login_view.dart';
@@ -26,7 +24,7 @@ void main() {
         child: const HomePage(),
       ),
       routes: {
-        loginRoute: (context) => const LogInView(),
+        loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
         verifyEmailRoute: (context) => const VerifyEmailView(),
@@ -52,17 +50,9 @@ class HomePage extends StatelessWidget {
             return const VerifyEmailView();
 
           case AuthStateLoggedOut():
-            return const LogInView();
+            return const LoginView();
           default:
             return const Scaffold(body: CircularProgressIndicator());
-          // case AuthStateLoading():
-          // // TODO: Handle this case.
-
-          // case AuthStateLoginFailure():
-          // // TODO: Handle this case.
-
-          // case AuthStateLogOutFailure():
-          // // TODO: Handle this case.
         }
       },
     );

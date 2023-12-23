@@ -1,25 +1,17 @@
 part of 'auth_bloc.dart';
 
-sealed class AuthState extends Equatable {
+@immutable
+abstract class AuthState {
   const AuthState();
-
-  @override
-  List<Object> get props => [];
 }
 
-final class AuthStateLoading extends AuthState {
+class AuthStateLoading extends AuthState {
   const AuthStateLoading();
 }
 
-final class AuthStateLoggedIn extends AuthState {
+class AuthStateLoggedIn extends AuthState {
   final AuthUser user;
   const AuthStateLoggedIn(this.user);
-}
-
-class AuthStateLoginFailure extends AuthState {
-  final Exception exception;
-
-  const AuthStateLoginFailure(this.exception);
 }
 
 class AuthStateNeedsVerification extends AuthState {
@@ -27,11 +19,11 @@ class AuthStateNeedsVerification extends AuthState {
 }
 
 class AuthStateLoggedOut extends AuthState {
-  const AuthStateLoggedOut();
+  final Exception? exception;
+  const AuthStateLoggedOut(this.exception);
 }
 
-class AuthStateLogOutFailure extends AuthState {
+class AuthStateLogoutFailure extends AuthState {
   final Exception exception;
-
-  const AuthStateLogOutFailure(this.exception);
+  const AuthStateLogoutFailure(this.exception);
 }

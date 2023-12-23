@@ -36,7 +36,7 @@ class FirebaseAuthProvider implements AuthProvider {
       } else if (e.code == 'email-already-in-use') {
         throw EmailAlreadyInUseAuthException();
       } else if (e.code == 'invalid-email') {
-        throw InvalidEmailAuthException();
+        throw InvalidFillingAuthException();
       } else {
         throw GenericAuthException();
       }
@@ -72,10 +72,10 @@ class FirebaseAuthProvider implements AuthProvider {
         throw UserNotLoggedInAuthException();
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        throw UserNotFoundAuthException();
-      } else if (e.code == 'wrong-password') {
-        throw WrongPasswordAuthException();
+      if (e.code == 'invalid-credential') {
+        throw WrongCredentialsdAuthException();
+      } else if (e.code == 'channel-error') {
+        throw InvalidFillingAuthException();
       } else {
         throw GenericAuthException();
       }
