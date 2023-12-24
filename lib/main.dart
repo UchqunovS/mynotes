@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_app/constants/routes.dart';
+import 'package:notes_app/helpers/loading/loading_screen.dart';
 import 'package:notes_app/services/auth/bloc/auth_bloc.dart';
 import 'package:notes_app/services/auth/firebase_auth_provider.dart';
 import 'package:notes_app/views/authentication/login_view.dart';
@@ -36,15 +37,26 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<AuthBloc>().add(const AuthEventInitialize());
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        switch (state.isLoading ?? false) {
+          case true:
+            LoadingScreen().show(
+              context: context,
+              text: state.loadingText ?? 'Please wait a moment',
+            );
+            break;
+          case false:
+            LoadingScreen().hide();
+            break;
+        }
+      },
       builder: (context, state) {
         switch (state) {
           case AuthStateLoggedIn():
             return const NotesView();
-
           case AuthStateNeedsVerification():
             return const VerifyEmailView();
-
           case AuthStateLoggedOut():
             return const LoginView();
           case AuthStateRegistering():

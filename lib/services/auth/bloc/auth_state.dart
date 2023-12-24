@@ -2,11 +2,18 @@ part of 'auth_bloc.dart';
 
 @immutable
 abstract class AuthState {
-  const AuthState();
+  final String? loadingText;
+  final bool? isLoading;
+  const AuthState({
+    this.loadingText = 'Please wait a moment',
+    this.isLoading = false,
+  });
 }
 
 class AuthStateUninitialized extends AuthState {
-  const AuthStateUninitialized();
+  const AuthStateUninitialized({
+    required bool super.isLoading,
+  });
 }
 
 class AuthStateRegistering extends AuthState {
@@ -25,10 +32,10 @@ class AuthStateNeedsVerification extends AuthState {
 
 class AuthStateLoggedOut extends AuthState with EquatableMixin {
   final Exception? exception;
-  final bool isLoading;
   const AuthStateLoggedOut({
-    required this.exception,
-    required this.isLoading,
+    this.exception,
+    super.loadingText = null,
+    bool super.isLoading,
   });
 
   @override
