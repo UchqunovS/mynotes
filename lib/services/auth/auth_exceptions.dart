@@ -1,6 +1,10 @@
 // login exceptions
 class WrongCredentialsdAuthException implements Exception {}
 
+class InvalidEmailAuthException implements Exception {}
+
+class UserNotFoundAuthException implements Exception {}
+
 // register exceptions
 
 class WeakPasswordAuthException implements Exception {}
